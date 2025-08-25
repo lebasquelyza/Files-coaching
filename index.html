@@ -96,8 +96,8 @@
             <input id="poids" name="poids" type="number" step="0.1" min="20" max="400" placeholder="Ex. 60" required />
           </div>
           <div>
-             <label for="taille">Taille (cm)</label>
-              <input id="taille" name="taille" type="number" min="100" max="250" placeholder="Ex. 170" />
+            <label for="taille">Taille (cm)</label>
+            <input id="taille" name="taille" type="number" min="100" max="250" placeholder="Ex. 170" />
           </div>
           <div>
             <label for="niveau">Niveau</label>
@@ -171,7 +171,6 @@
     function showThanks() {
       formSection.hidden = true;
       thanksSection.hidden = false;
-      // message déjà présent dans le HTML (celui que tu as demandé)
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -180,6 +179,11 @@
       msg.style.display = 'none';
 
       const data = Object.fromEntries(new FormData(form).entries());
+
+      // Honeypot anti-bot : si rempli, on sort
+      if (data['bot-field']) return;
+
+      // Validation email
       if (!data.email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(data.email)) {
         msg.textContent = 'Entre une adresse e-mail valide 🙂';
         msg.style.display = 'block';
@@ -196,21 +200,30 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),
         });
-        if (!r1.ok) throw new Error('send-confirmation failed');
 
-        // 2) Enregistrement dans Netlify Forms (pour conserver l'entrée)
+        if (!r1.ok) {
+          // Affiche le détail de l’erreur côté page (ex: 401 API key invalid)
+          let detail = '';
+          try {
+            const j = await r1.json();
+            detail = j?.clientError?.message || j?.adminError?.message || j?.clientError || j?.adminError || '';
+          } catch {}
+          throw new Error(`send-confirmation failed (${r1.status}) ${detail}`.trim());
+        }
+
+        // 2) Enregistrement dans Netlify Forms
         await fetch(form.getAttribute('action') || '/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
           body: encode({ 'form-name': form.getAttribute('name') || 'coaching', ...data }),
         });
 
-        // 3) Afficher "merci" dans la même page
+        // 3) Afficher "merci" (même page)
         form.reset();
         showThanks();
       } catch (err) {
         console.error(err);
-        msg.textContent = "Oups… impossible d’envoyer. Réessaie, ou écris-nous : sportifandpro@gmail.com";
+        msg.textContent = "Oups… impossible d’envoyer. " + String(err?.message || "");
         msg.style.display = 'block';
       } finally {
         btn.disabled = false; btn.textContent = saved;
@@ -227,4 +240,3 @@
   </script>
 </body>
 </html>
-
