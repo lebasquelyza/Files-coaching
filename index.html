@@ -30,7 +30,7 @@
     form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
     form .full{grid-column:1 / -1}
     label{display:block;font-weight:600;font-size:14px;margin:4px 0 6px}
-    input,select,textarea{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:#0b1222;color:var(--text);outline:none;transition:border-color .2s}
+    input,select,textarea{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:#0b1222;color:#0ff0; color:var(--text);outline:none;transition:border-color .2s}
     input:focus,select:focus,textarea:focus{border-color:var(--accent)}
     textarea{min-height:96px;resize:vertical}
     .btn{appearance:none;border:none;background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;padding:12px 18px;border-radius:12px;font-weight:800;cursor:pointer}
@@ -145,7 +145,6 @@
   </main>
 
   <script>
-    // URL de ta fonction Netlify (envoi email via Resend)
     const FUNCTION_URL = '/.netlify/functions/send-confirmation';
 
     const form = document.getElementById('coaching-form');
@@ -155,15 +154,12 @@
     const thanksSection = document.getElementById('thanks');
     const againBtn = document.getElementById('again');
 
-    // Fallback sans JS (Netlify Forms) : si on arrive avec ?merci=1 → montrer "merci"
+    // Fallback : si on revient via Netlify Forms (?merci=1) → montre "merci"
     (function () {
       const u = new URL(location.href);
-      if (u.searchParams.get('merci') === '1') {
-        showThanks();
-      }
+      if (u.searchParams.get('merci') === '1') showThanks();
     })();
 
-    // Encodage x-www-form-urlencoded pour Netlify Forms
     const encode = (data) => Object.keys(data)
       .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(data[k] ?? ''))
       .join('&');
@@ -179,11 +175,8 @@
       msg.style.display = 'none';
 
       const data = Object.fromEntries(new FormData(form).entries());
+      if (data['bot-field']) return; // honeypot
 
-      // Honeypot anti-bot : si rempli, on sort
-      if (data['bot-field']) return;
-
-      // Validation email
       if (!data.email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(data.email)) {
         msg.textContent = 'Entre une adresse e-mail valide 🙂';
         msg.style.display = 'block';
@@ -194,7 +187,7 @@
       btn.disabled = true; btn.textContent = 'Envoi…';
 
       try {
-        // 1) Envoi de l'email automatique (fonction Netlify)
+        // 1) Email via fonction Netlify
         const r1 = await fetch(FUNCTION_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -202,23 +195,27 @@
         });
 
         if (!r1.ok) {
-          // Affiche le détail de l’erreur côté page (ex: 401 API key invalid)
           let detail = '';
           try {
             const j = await r1.json();
-            detail = j?.clientError?.message || j?.adminError?.message || j?.clientError || j?.adminError || '';
+            const pick = j?.clientError ?? j?.adminError ?? j?.error ?? j;
+            detail = typeof pick === 'string' ? pick : (pick?.message || JSON.stringify(pick));
           } catch {}
           throw new Error(`send-confirmation failed (${r1.status}) ${detail}`.trim());
         }
 
-        // 2) Enregistrement dans Netlify Forms
-        await fetch(form.getAttribute('action') || '/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: encode({ 'form-name': form.getAttribute('name') || 'coaching', ...data }),
-        });
+        // 2) Netlify Forms (on tente mais non-bloquant)
+        try {
+          await fetch(form.getAttribute('action') || '/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: encode({ 'form-name': form.getAttribute('name') || 'coaching', ...data }),
+          });
+        } catch (e2) {
+          console.warn('Netlify Forms POST failed (non-bloquant):', e2);
+        }
 
-        // 3) Afficher "merci" (même page)
+        // 3) Affiche "merci"
         form.reset();
         showThanks();
       } catch (err) {
@@ -230,7 +227,6 @@
       }
     });
 
-    // Re-remplir le formulaire
     againBtn?.addEventListener('click', () => {
       thanksSection.hidden = true;
       formSection.hidden = false;
