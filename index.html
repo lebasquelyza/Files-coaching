@@ -67,19 +67,25 @@
         <p class="subtitle">Remplis ce formulaire. <b>Lyza & Files Coaching</b> étudient tes réponses pour bâtir ton programme.</p>
 
         <div class="steps">
-          <div class="step"><b>1 · Infos</b><span>Dis-nous qui tu es</span></div>
-          <div class="step"><b>2 · Objectif</b><span>Fixe ta direction</span></div>
-          <div class="step"><b>3 · Plan</b><span>On te propose des séances</span></div>
+          <div class="step"><b>1 · Infos</b><span>Présente toi</span></div>
+          <div class="step"><b>2 · Objectif</b><span>Fixe tes objectifs</span></div>
+          <div class="step"><b>3 · Plan</b><span>Tu reçois ton programme</span></div>
         </div>
 
-        <!-- Netlify Forms + email auto (via JS) -->
-        <form id="coaching-form" name="coaching" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/">
+        <!-- Netlify Forms + email auto (via JS). Fallback: action="/?merci=1" -->
+        <form
+          id="coaching-form"
+          name="coaching"
+          method="POST"
+          data-netlify="true"
+          netlify-honeypot="bot-field"
+          action="/?merci=1">
           <input type="hidden" name="form-name" value="coaching" />
           <input type="hidden" name="bot-field" />
 
           <div>
             <label for="prenom">Prénom</label>
-            <input id="prenom" name="prenom" placeholder="Ex. Lyza" required />
+            <input id="prenom" name="prenom" placeholder="Ex. Files" required />
           </div>
           <div>
             <label for="age">Âge</label>
@@ -88,6 +94,10 @@
           <div>
             <label for="poids">Poids (kg)</label>
             <input id="poids" name="poids" type="number" step="0.1" min="20" max="400" placeholder="Ex. 60" required />
+          </div>
+          <div>
+             <label for="taille">Taille (cm)</label>
+              <input id="taille" name="taille" type="number" min="100" max="250" placeholder="Ex. 170" />
           </div>
           <div>
             <label for="niveau">Niveau</label>
@@ -124,14 +134,11 @@
     <section id="thanks" class="hero" hidden>
       <div class="card center">
         <h2 class="title">Merci 🎉</h2>
-        <p class="subtitle">Tes réponses ont bien été reçues.<br>Nous allons préparer <b>plusieurs séances adaptées</b> 💪</p>
+        <p class="subtitle">Merci pour ta réponse ! Files et son équipe se chargent de les examiner et de revenir vers toi avec un programme adapté!</p>
         <div style="margin-top:18px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
           <a class="btn" href="mailto:sportifandpro@gmail.com">Nous contacter</a>
           <button class="btn ghost" id="again">Remplir à nouveau</button>
         </div>
-        <p class="subtitle" style="margin-top:12px;color:#a1a1aa">
-          Tu recevras un <b>e-mail de confirmation</b> sous peu. Regarde aussi <b>Promotions</b> / <b>Spam</b>.
-        </p>
       </div>
     </section>
 
@@ -148,10 +155,25 @@
     const thanksSection = document.getElementById('thanks');
     const againBtn = document.getElementById('again');
 
+    // Fallback sans JS (Netlify Forms) : si on arrive avec ?merci=1 → montrer "merci"
+    (function () {
+      const u = new URL(location.href);
+      if (u.searchParams.get('merci') === '1') {
+        showThanks();
+      }
+    })();
+
     // Encodage x-www-form-urlencoded pour Netlify Forms
     const encode = (data) => Object.keys(data)
       .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(data[k] ?? ''))
       .join('&');
+
+    function showThanks() {
+      formSection.hidden = true;
+      thanksSection.hidden = false;
+      // message déjà présent dans le HTML (celui que tu as demandé)
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -168,7 +190,7 @@
       btn.disabled = true; btn.textContent = 'Envoi…';
 
       try {
-        // 1) Envoi email auto via la fonction Netlify
+        // 1) Envoi de l'email automatique (fonction Netlify)
         const r1 = await fetch(FUNCTION_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -176,7 +198,7 @@
         });
         if (!r1.ok) throw new Error('send-confirmation failed');
 
-        // 2) Enregistrement dans Netlify Forms
+        // 2) Enregistrement dans Netlify Forms (pour conserver l'entrée)
         await fetch(form.getAttribute('action') || '/', {
           method: 'POST',
           headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -184,17 +206,16 @@
         });
 
         // 3) Afficher "merci" dans la même page
-        <!-- MERCI (dans la même page) -->
-<section id="thanks" class="hero" hidden>
-  <div class="card center">
-    <h2 class="title">Merci 🎉</h2>
-    <p class="subtitle">Merci pour tes reponse Files et sont équipe se charge de tenvoyer un lai qui le confirme !</p>
-    <div style="margin-top:18px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-      <a class="btn" href="mailto:sportifandpro@gmail.com">Nous contacter</a>
-      <button class="btn ghost" id="again">Remplir à nouveau</button>
-    </div>
-  </div>
-</section>
+        form.reset();
+        showThanks();
+      } catch (err) {
+        console.error(err);
+        msg.textContent = "Oups… impossible d’envoyer. Réessaie, ou écris-nous : sportifandpro@gmail.com";
+        msg.style.display = 'block';
+      } finally {
+        btn.disabled = false; btn.textContent = saved;
+      }
+    });
 
     // Re-remplir le formulaire
     againBtn?.addEventListener('click', () => {
@@ -206,3 +227,4 @@
   </script>
 </body>
 </html>
+
