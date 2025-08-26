@@ -67,40 +67,49 @@ export async function handler(event) {
   const toClient = isTest(event) ? TEST_RECIPIENT : email;
   const toAdmin  = isTest(event) ? TEST_RECIPIENT : adminEmail;
 
-  // Contenu e-mail CLIENT
+  // --------- CONTENU CLIENT (convivial) ---------
   const htmlClient = `
-    <div style="font-family:system-ui,Segoe UI,Roboto,Arial">
-      <p>Salut ${escapeHtml(prenom || "")} 👋</p>
-      <p>Merci d’avoir pris le temps de remplir notre questionnaire 🙏</p>
-      <p>L’équipe <b>Files Coaching</b> prépare une <b>séance sur-mesure</b> 💪</p>
-      <hr>
-      <p><em>Récap :</em></p>
-      <ul>
-        <li><b>Âge:</b> ${escapeHtml(String(age || "-"))}</li>
-        <li><b>Poids:</b> ${escapeHtml(String(poids || "-"))}</li>
-        <li><b>Niveau:</b> ${escapeHtml(niveau || "-")}</li>
-        <li><b>Objectif:</b> ${escapeHtml(objectif || "-")}</li>
-        <li><b>Dispos:</b> ${escapeHtml((dispo || "-")).replace(/\n/g,"<br>")}</li>
-      </ul>
-      <p style="font-size:12px;color:#666">
-        ⚠️ E-mail automatique, merci de ne pas répondre.
-        Questions : <a href="mailto:${adminEmail}">${adminEmail}</a>
+    <div style="font-family:system-ui,Segoe UI,Roboto,Arial;line-height:1.6;color:#111">
+      <h2 style="color:#16a34a">Merci ${escapeHtml(prenom || "")} 🙏</h2>
+      <p>
+        Ton questionnaire a bien été transmis à <b>Files Coaching</b>.
+        Chaque réponse est précieuse : elles nous aident à comprendre tes besoins et à préparer
+        <b>une séance parfaitement adaptée</b> à ton niveau, ton objectif et ton emploi du temps.
       </p>
+      <p>
+        <b>Concrètement :</b><br>
+        • Nous allons examiner tes réponses avec attention 👀<br>
+        • Nous bâtissons un plan personnalisé 📝<br>
+        • Tu recevras bientôt ta proposition de séances 💪
+      </p>
+      <hr style="border:none;border-top:1px solid #eee;margin:20px 0" />
+      <p style="font-size:0.9em;color:#555">
+        Cet e-mail est automatique, merci de ne pas y répondre directement.<br>
+        Pour toute question, écris-nous à
+        <a href="mailto:${adminEmail}">${adminEmail}</a>.
+      </p>
+      <p style="margin-top:20px">À très vite 👋<br><b>L’équipe Files Coaching</b></p>
     </div>
   `.trim();
 
   const textClient =
-`Salut ${prenom || ""} 👋
-Merci pour ton questionnaire.
-Récap:
-- Âge: ${age || "-"}
-- Poids: ${poids || "-"}
-- Niveau: ${niveau || "-"}
-- Objectif: ${objectif || "-"}
-- Dispos: ${(dispo || "-").replace(/\n/g," / ")}
-Questions: ${adminEmail}`;
+`Merci ${prenom || ""} 🙏
 
-  // Contenu e-mail ADMIN
+Ton questionnaire a bien été reçu par Files Coaching.
+
+Chaque réponse compte : elles nous permettent de préparer une séance adaptée à ton niveau, ton objectif et tes disponibilités.
+
+Concrètement :
+- Nous allons examiner tes réponses 👀
+- Nous bâtissons un plan personnalisé 📝
+- Tu recevras bientôt ta proposition de séances 💪
+
+Cet e-mail est automatique, merci de ne pas y répondre.
+Pour toute question : ${adminEmail}
+
+— L’équipe Files Coaching`;
+
+  // --------- CONTENU ADMIN ---------
   const htmlAdmin = `
     <div style="font-family:system-ui,Segoe UI,Roboto,Arial">
       <p><b>Nouveau questionnaire reçu</b></p>
