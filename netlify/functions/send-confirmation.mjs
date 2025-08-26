@@ -1,234 +1,103 @@
-<!doctype html>
-<html lang="fr">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Files Coaching — Questionnaire</title>
-  <style>
-    :root {
-      --bg1:#0b1026; --bg2:#121a3a; --card:rgba(15,23,42,.82);
-      --text:#e5e7eb; --muted:#a1a1aa; --line:rgba(255,255,255,.12); --accent:#22c55e;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;background:linear-gradient(145deg,var(--bg1),var(--bg2));color:var(--text)}
+// /.netlify/functions/send-confirmation
+// Envoi via Resend vers mail-tester (adresse fournie)
 
-    /* Header */
-    .topbar{
-      position:sticky; top:0; z-index:50; backdrop-filter:saturate(1.2) blur(10px);
-      background:linear-gradient(180deg, rgba(10,15,30,.7), rgba(10,15,30,.35));
-      border-bottom:1px solid var(--line);
-    }
-    .topbar-inner{
-      max-width:1100px; margin:0 auto; padding:12px 16px; display:flex; align-items:center; justify-content:space-between;
-    }
-    .brand{display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.2px}
-    .brand .logo{width:36px; height:36px; display:grid; place-items:center; border-radius:10px; background:#16a34a22; border:1px solid #16a34a44}
-    .top-actions a{
-      display:inline-flex; align-items:center; gap:8px; padding:10px 14px; text-decoration:none; color:#fff;
-      border-radius:12px; border:1px solid var(--line); background:transparent; font-weight:700;
-    }
-    .top-actions a:hover{border-color:#ffffff40}
+export const handler = async (event) => {
+  if (event.httpMethod !== "POST") {
+    return { statusCode: 405, body: "Method Not Allowed" };
+  }
 
-    /* Layout */
-    .wrap{max-width:980px; margin:24px auto; padding:20px}
-    .card{width:100%; background:var(--card); border:1px solid var(--line); border-radius:20px; padding:24px; box-shadow:0 10px 40px rgba(0,0,0,.35)}
-    .title{margin:0 0 8px; font-size:clamp(22px,3vw,30px)}
-    .subtitle{margin:0 0 18px; color:var(--muted)}
-    .steps{display:grid; gap:10px; margin:16px 0 20px}
-    .step{display:flex; gap:10px; align-items:baseline; padding:10px 12px; border:1px dashed var(--line); border-radius:12px}
-    .step b{min-width:95px}
-
-    /* Form */
-    form{display:grid; grid-template-columns:1fr 1fr; gap:14px}
-    form .full{grid-column:1 / -1}
-    label{display:block; font-weight:600; font-size:14px; margin:4px 0 6px}
-    input,select,textarea{
-      width:100%; padding:12px 14px; border-radius:12px; border:1px solid var(--line);
-      background:#0b1222; color:var(--text); outline:none; transition:border-color .2s
+  try {
+    const RESEND_API_KEY = process.env.RESEND_API_KEY;
+    if (!RESEND_API_KEY) {
+      console.error("Missing RESEND_API_KEY");
+      return { statusCode: 500, body: "Server not configured" };
     }
-    input:focus,select:focus,textarea:focus{border-color:var(--accent)}
-    textarea{min-height:96px; resize:vertical}
-    .btn{
-      appearance:none; border:none; background:linear-gradient(135deg,#22c55e,#16a34a); color:#fff;
-      padding:12px 18px; border-radius:12px; font-weight:800; cursor:pointer;
-    }
-    .btn.ghost{background:transparent; border:1px solid var(--line); font-weight:700}
-    .btn:disabled{opacity:.7; cursor:not-allowed}
-    .msg{grid-column:1/-1; font-size:14px; color:#fca5a5; display:none}
 
-    /* Views */
-    .hero{min-height:calc(100dvh - 64px); display:grid; place-items:center}
-    .center{text-align:center}
-    [hidden]{display:none !important}
-    a{color:#c7f9cc; text-decoration:none}
-    a:hover{text-decoration:underline}
+    const data = JSON.parse(event.body || "{}");
+    const {
+      prenom = "",
+      age = "",
+      poids = "",
+      niveau = "",
+      objectif = "",
+      dispo = "",
+      email = "",
+    } = data;
 
-    @media (max-width:720px){
-      form{grid-template-columns:1fr}
-      .step b{min-width:auto}
-      .top-actions a{padding:8px 12px}
-    }
-  </style>
-</head>
-<body>
+    // Contenu
+    const from = "Files Coaching <contact@files-coaching.com>"; // ton domaine
+    const to = "test-cvxzq2i5r@srv1.mail-tester.com";            // ton destinataire de test
+    const subject = "Test SPF/DKIM/DMARC — Files Coaching";
 
-  <!-- HEADER avec "Nous contacter" en haut à droite -->
-  <header class="topbar">
-    <div class="topbar-inner">
-      <div class="brand"><div class="logo">💪</div> Files Coaching</div>
-      <div class="top-actions">
-        <a href="mailto:sportifandpro@gmail.com" aria-label="Nous contacter">✉️ Nous contacter</a>
+    const text = [
+      "Hello, test de configuration.",
+      "",
+      "Infos formulaire :",
+      `- Prénom: ${prenom}`,
+      `- Âge: ${age}`,
+      `- Poids: ${poids}`,
+      `- Niveau: ${niveau}`,
+      `- Objectif: ${objectif}`,
+      `- Dispo: ${dispo}`,
+      `- Email saisi: ${email}`,
+    ].join("\n");
+
+    const html = `
+      <div style="font-family:system-ui,Segoe UI,Roboto,Arial">
+        <h2>Test SPF/DKIM/DMARC</h2>
+        <p>Hello, ceci est un test de configuration.</p>
+        <hr style="border:none;border-top:1px solid #eee;margin:16px 0" />
+        <h3>Infos formulaire</h3>
+        <ul>
+          <li><b>Prénom:</b> ${escapeHtml(prenom)}</li>
+          <li><b>Âge:</b> ${escapeHtml(String(age))}</li>
+          <li><b>Poids:</b> ${escapeHtml(String(poids))}</li>
+          <li><b>Niveau:</b> ${escapeHtml(niveau)}</li>
+          <li><b>Objectif:</b> ${escapeHtml(objectif)}</li>
+          <li><b>Dispo:</b> ${escapeHtml(dispo)}</li>
+          <li><b>Email saisi:</b> ${escapeHtml(email)}</li>
+        </ul>
+        <p style="color:#888">Envoyé via Resend → mail-tester.</p>
       </div>
-    </div>
-  </header>
+    `.trim();
 
-  <main class="wrap">
-
-    <!-- Formulaire -->
-    <section id="formulaire" class="hero">
-      <div class="card">
-        <h2 class="title">Questionnaire coaching</h2>
-        <p class="subtitle">Remplis ce formulaire. <b>Lyza & Files Coaching</b> étudient tes réponses pour bâtir ton programme personnalisé.</p>
-
-        <div class="steps">
-          <div class="step"><b>1 · Infos</b><span>Dis-nous qui tu es</span></div>
-          <div class="step"><b>2 · Objectif</b><span>Fixe ta direction</span></div>
-          <div class="step"><b>3 · Plan</b><span>On te propose des séances</span></div>
-        </div>
-
-        <!-- Netlify Forms + envoi email automatique côté JS -->
-        <form id="coaching-form" name="coaching" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/">
-          <input type="hidden" name="form-name" value="coaching" />
-          <input type="hidden" name="bot-field" />
-
-          <div>
-            <label for="prenom">Prénom</label>
-            <input id="prenom" name="prenom" placeholder="Ex. Lyza" required />
-          </div>
-          <div>
-            <label for="age">Âge</label>
-            <input id="age" name="age" type="number" min="10" max="100" placeholder="Ex. 25" required />
-          </div>
-          <div>
-            <label for="poids">Poids (kg)</label>
-            <input id="poids" name="poids" type="number" step="0.1" min="20" max="400" placeholder="Ex. 60" required />
-          </div>
-          <div>
-            <label for="niveau">Niveau</label>
-            <select id="niveau" name="niveau" required>
-              <option value="" disabled selected>Choisir un niveau…</option>
-              <option value="faible">Faible</option>
-              <option value="modere">Modéré</option>
-              <option value="pro">Pro</option>
-            </select>
-          </div>
-          <div class="full">
-            <label for="objectif">Objectif</label>
-            <input id="objectif" name="objectif" placeholder="Ex. Perte de poids" required />
-          </div>
-          <div class="full">
-            <label for="dispo">Disponibilités</label>
-            <textarea id="dispo" name="dispo" placeholder="Ex : Lundi & Jeudi soir ; Samedi matin ; 3 séances/sem."></textarea>
-          </div>
-          <div class="full">
-            <label for="email">Adresse e-mail</label>
-            <input id="email" name="email" type="email" placeholder="exemple@mail.com" required />
-          </div>
-
-          <p id="msg" class="msg">Oups, envoi impossible. Réessaie dans un instant.</p>
-
-          <div class="full" style="text-align:right;margin-top:6px">
-            <button class="btn" type="submit" id="submit-btn">Envoyer & recevoir l’e-mail</button>
-          </div>
-        </form>
-      </div>
-    </section>
-
-    <!-- Merci -->
-    <section id="thanks" class="hero" hidden>
-      <div class="card center">
-        <h2 class="title">Merci 🎉</h2>
-        <p class="subtitle">Tes réponses ont bien été reçues.<br>Nous allons préparer <b>plusieurs séances adaptées</b> 💪</p>
-        <div style="margin-top:18px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap">
-          <a class="btn" href="mailto:sportifandpro@gmail.com">Nous contacter</a>
-          <button class="btn ghost" id="again">Remplir à nouveau</button>
-        </div>
-        <p class="subtitle" style="margin-top:12px; color:#a1a1aa">
-          Tu recevras un <b>e-mail de confirmation</b> sous peu. Regarde aussi <b>Promotions</b> / <b>Spam</b>.
-        </p>
-      </div>
-    </section>
-
-  </main>
-
-  <script>
-    // ------- config -------
-    const FUNCTION_URL = '/.netlify/functions/send-confirmation'; // ta fonction Netlify (Resend)
-    // ----------------------
-
-    const form = document.getElementById('coaching-form');
-    const btn = document.getElementById('submit-btn');
-    const msg = document.getElementById('msg');
-    const formSection = document.getElementById('formulaire');
-    const thanksSection = document.getElementById('thanks');
-    const againBtn = document.getElementById('again');
-
-    // Encodage x-www-form-urlencoded (pour Netlify Forms)
-    const encode = (data) =>
-      Object.keys(data).map(k => encodeURIComponent(k)+'='+encodeURIComponent(data[k] ?? '')).join('&');
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      msg.style.display = 'none';
-
-      const data = Object.fromEntries(new FormData(form).entries());
-      if (!data.email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(data.email)) {
-        msg.textContent = 'Entre une adresse e-mail valide 🙂';
-        msg.style.display = 'block';
-        return;
-      }
-
-      const original = btn.textContent;
-      btn.disabled = true; btn.textContent = 'Envoi…';
-
-      try {
-        // 1) Email auto via la fonction Netlify (Resend)
-        const r1 = await fetch(FUNCTION_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data),
-        });
-        if (!r1.ok) throw new Error('send-confirmation failed');
-
-        // 2) Enregistrer l’entrée dans Netlify Forms
-        await fetch(form.getAttribute('action') || '/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: encode({ 'form-name': form.getAttribute('name') || 'coaching', ...data }),
-        });
-
-        // 3) Affiche "merci"
-        form.reset();
-        formSection.hidden = true;
-        thanksSection.hidden = false;
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      } catch (err) {
-        console.error(err);
-        msg.textContent = "Oups… impossible d’envoyer. Réessaie, ou écris-nous : sportifandpro@gmail.com";
-        msg.style.display = 'block';
-      } finally {
-        btn.disabled = false; btn.textContent = original;
-      }
+    // Appel API Resend
+    const resp = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from,
+        to,
+        subject,
+        text,
+        html,
+        reply_to: "Files Coaching <contact@files-coaching.com>",
+      }),
     });
 
-    // Refaire le formulaire
-    againBtn?.addEventListener('click', () => {
-      thanksSection.hidden = true;
-      formSection.hidden = false;
-      msg.style.display = 'none';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-  </script>
-</body>
-</html>
+    const body = await resp.text();
+    if (!resp.ok) {
+      console.error("Resend error:", resp.status, body);
+      return { statusCode: 500, body: "send-confirmation failed" };
+    }
+
+    return { statusCode: 200, body: body || JSON.stringify({ ok: true }) };
+  } catch (e) {
+    console.error(e);
+    return { statusCode: 500, body: "send-confirmation failed (exception)" };
+  }
+};
+
+// --- helpers ---
+function escapeHtml(str = "") {
+  return String(str)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
