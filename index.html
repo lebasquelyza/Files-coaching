@@ -229,7 +229,7 @@
       btn.disabled = true; btn.textContent = 'Envoi…';
 
       try {
-        # 1) Email via fonction Netlify
+        // 1) Email via fonction Netlify
         r1 = await fetch(FUNCTION_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
