@@ -62,12 +62,12 @@ export async function handler(event) {
   const from = "Files Coaching <onboarding@resend.dev>";
 
   // Destinataires
-  const TEST_RECIPIENT = "lebasquelyza66@gmail.com";
-  const adminEmail = "sportifandpro@gmail.com";
-  const toClient = isTest(event) ? TEST_RECIPIENT : email;
-  const toAdmin  = isTest(event) ? TEST_RECIPIENT : adminEmail;
+  const FROM_TEST = "Files Coaching <onboarding@resend.dev>";            // garde pour le mode test
+const FROM_PROD = "Files Coaching <contact@files-coaching.com>";       // ← ton expéditeur de prod
+const from = isTest(event) ? FROM_TEST : FROM_PROD;
 
-  // --------- CONTENU CLIENT (convivial) ---------
+
+// --------- CONTENU CLIENT (convivial) ---------
   const htmlClient = `
     <div style="font-family:system-ui,Segoe UI,Roboto,Arial;line-height:1.6;color:#111">
       <h2 style="color:#16a34a">Merci ${escapeHtml(prenom || "")} 🙏</h2>
