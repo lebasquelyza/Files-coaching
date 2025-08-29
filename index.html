@@ -8,50 +8,20 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <title>Files Coaching — Questionnaire</title>
   <style>
-
     :root{
-      --bg:#ffffff;
-      --text:#111111;
-      --muted:#374151;
-      --panel:#ffffff;
-      --line:#e5e7eb;
-      --brand:#16a34a;
-      --brand2:#15803d;
-      --accent:#0ea5e9;
-      --radius:14px;
-      --shadow:0 6px 18px rgba(0,0,0,.08);
+      --bg:#ffffff;--text:#111111;--muted:#374151;--panel:#ffffff;--line:#e5e7eb;
+      --brand:#16a34a;--brand2:#15803d;--accent:#0ea5e9;--radius:14px;--shadow:0 6px 18px rgba(0,0,0,.08);
     }
     *{box-sizing:border-box} html,body{height:100%}
-    body{
-      margin:0;
-      font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
-      background:var(--bg);
-      color:var(--text);
-      line-height:1.6;
-    }
-
-    /* Header (clair et lisible) */
-    .topbar{
-      position:sticky;top:0;z-index:50;
-      backdrop-filter:blur(6px);
-      background:#fffffff2;
-      border-bottom:1px solid var(--line);
-    }
+    body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;background:var(--bg);color:var(--text);line-height:1.6}
+    .topbar{position:sticky;top:0;z-index:50;backdrop-filter:blur(6px);background:#fffffff2;border-bottom:1px solid var(--line)}
     .topbar-inner{max-width:1100px;margin:0 auto;padding:12px 16px;display:flex;align-items:center;justify-content:space-between}
     .brand{display:flex;align-items:center;gap:10px;font-weight:800;color:#0b0f14}
-    .brand .logo{
-      width:36px;height:36px;display:grid;place-items:center;border-radius:10px;
-      background:linear-gradient(135deg,var(--brand),var(--accent)); color:#fff; font-size:18px;
-      box-shadow:0 4px 10px rgba(22,163,74,.25)
-    }
-    .top-actions a{
-      display:inline-flex;align-items:center;gap:8px;padding:10px 14px;text-decoration:none;
-      color:#111;border-radius:10px;border:1px solid var(--line);background:#fff;font-weight:700;
-      box-shadow:var(--shadow)
-    }
+    .brand .logo{width:36px;height:36px;display:grid;place-items:center;border-radius:10px;
+      background:linear-gradient(135deg,var(--brand),var(--accent));color:#fff;font-size:18px;box-shadow:0 4px 10px rgba(22,163,74,.25)}
+    .top-actions a{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;text-decoration:none;
+      color:#111;border-radius:10px;border:1px solid var(--line);background:#fff;font-weight:700;box-shadow:var(--shadow)}
     .top-actions a:hover{background:#f8fafc}
-
-    /* Layout */
     .wrap{max-width:980px;margin:24px auto;padding:20px}
     .card{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:24px;box-shadow:var(--shadow)}
     .title{margin:0 0 8px;font-size:clamp(22px,3vw,30px);color:#0b0f14}
@@ -59,38 +29,28 @@
     .steps{display:grid;gap:10px;margin:16px 0 20px}
     .step{display:flex;gap:10px;align-items:baseline;padding:10px 12px;border:1px dashed var(--line);border-radius:12px;color:#111}
     .step b{min-width:95px}
-
-    /* Form */
     form{display:grid;grid-template-columns:1fr 1fr;gap:14px}
     form .full{grid-column:1 / -1}
     label{display:block;font-weight:600;font-size:14px;margin:4px 0 6px;color:#0b0f14}
-    input,select,textarea{
-      width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);
-      background:#fff;color:#111;outline:none;transition:border-color .2s, box-shadow .2s
-    }
+    input,select,textarea{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--line);
+      background:#fff;color:#111;outline:none;transition:border-color .2s, box-shadow .2s}
     input::placeholder,textarea::placeholder{color:#9ca3af}
     input:focus,select:focus,textarea:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(22,163,74,.15)}
     textarea{min-height:120px;resize:vertical}
-    .btn{
-      appearance:none;border:none;background:linear-gradient(135deg,var(--brand),#22c55e);color:#fff;
-      padding:12px 18px;border-radius:12px;font-weight:800;cursor:pointer;box-shadow:var(--shadow)
-    }
+    .btn{appearance:none;border:none;background:linear-gradient(135deg,var(--brand),#22c55e);color:#fff;
+      padding:12px 18px;border-radius:12px;font-weight:800;cursor:pointer;box-shadow:var(--shadow)}
     .btn.ghost{background:#fff;border:1px solid var(--line);color:#111}
     .btn:disabled{opacity:.7;cursor:not-allowed}
     .msg{grid-column:1/-1;font-size:14px;color:#b91c1c;display:none}
-
-    /* Views */
     .hero{min-height:calc(100dvh - 64px);display:grid;place-items:center;background:var(--bg)}
     .center{text-align:center}
     [hidden]{display:none !important}
     a{color:var(--brand);text-decoration:none} a:hover{text-decoration:underline}
     @media (max-width:720px){form{grid-template-columns:1fr}.step b{min-width:auto}.top-actions a{padding:8px 12px}}
-
   </style>
 </head>
 <body>
 
-  <!-- HEADER : Nous contacter en haut à droite -->
   <header class="topbar">
     <div class="topbar-inner">
       <div class="brand"><div class="logo">💪</div> Files Coaching</div>
@@ -101,8 +61,6 @@
   </header>
 
   <main class="wrap">
-
-    <!-- FORMULAIRE -->
     <section id="formulaire" class="hero">
       <div class="card">
         <h2 class="title">Questionnaire coaching</h2>
@@ -114,7 +72,7 @@
           <div class="step"><b>3 · Plan</b><span>Tu reçois ton programme</span></div>
         </div>
 
-        <!-- Netlify Forms + email auto (via JS). Fallback: action="/?merci=1" -->
+        <!-- Formulaire -->
         <form
           id="coaching-form"
           name="coaching"
@@ -159,10 +117,10 @@
             <textarea id="dispo" name="dispo" placeholder="Ex : Lundi & Jeudi soir ; Samedi matin ; 3 séances/sem."></textarea>
           </div>
           <div class="full">
-  <label for="lieu">À quel endroit vas-tu faire ta séance ?</label>
-  <input id="lieu" name="lieu" placeholder="Ex. Maison, salle de sport, parc…" required />
-</div>
-  <div class="full">
+            <label for="lieu">À quel endroit vas-tu faire ta séance ?</label>
+            <input id="lieu" name="lieu" placeholder="Ex. Maison, salle de sport, parc…" required />
+          </div>
+          <div class="full">
             <label for="email">Adresse e-mail</label>
             <input id="email" name="email" type="email" placeholder="exemple@mail.com" required />
           </div>
@@ -176,7 +134,6 @@
       </div>
     </section>
 
-    <!-- MERCI (dans la même page) -->
     <section id="thanks" class="hero" hidden>
       <div class="card center">
         <h2 class="title">Merci 🎉</h2>
@@ -187,11 +144,11 @@
         </div>
       </div>
     </section>
-
   </main>
 
   <script>
     const FUNCTION_URL = '/.netlify/functions/send-confirmation';
+    const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbyIcaUi6s0KCzMSSm3DXz9tY41Mef9Aykg2afykPkWhwMqAoG8zDj8RBCtF1u5XTraCSg/exec';
 
     const form = document.getElementById('coaching-form');
     const btn = document.getElementById('submit-btn');
@@ -200,7 +157,6 @@
     const thanksSection = document.getElementById('thanks');
     const againBtn = document.getElementById('again');
 
-    // Fallback : si on revient via Netlify Forms (?merci=1) → montre "merci"
     (function () {
       const u = new URL(location.href);
       if (u.searchParams.get('merci') === '1') showThanks();
@@ -221,7 +177,7 @@
       msg.style.display = 'none';
 
       const data = Object.fromEntries(new FormData(form).entries());
-      if (data['bot-field']) return; // honeypot
+      if (data['bot-field']) return;
 
       if (!data.email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(data.email)) {
         msg.textContent = 'Entre une adresse e-mail valide 🙂';
@@ -234,23 +190,13 @@
 
       try {
         // 1) Email via fonction Netlify
-        r1 = await fetch(FUNCTION_URL, {
+        await fetch(FUNCTION_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(data),
         });
 
-        if (!r1.ok) {
-          let detail = '';
-          try {
-            const j = await r1.json();
-            const pick = j?.clientError ?? j?.adminError ?? j?.error ?? j;
-            detail = typeof pick === 'string' ? pick : (pick?.message || JSON.stringify(pick));
-          } catch {}
-          throw new Error(`send-confirmation failed (${r1.status}) ${detail}`.trim());
-        }
-
-        // 2) Netlify Forms (on tente mais non-bloquant)
+        // 2) Netlify Forms (non-bloquant)
         try {
           await fetch(form.getAttribute('action') || '/', {
             method: 'POST',
@@ -261,7 +207,18 @@
           console.warn('Netlify Forms POST failed (non-bloquant):', e2);
         }
 
-        // 3) Affiche "merci"
+        // 3) Google Sheets via Apps Script (non-bloquant aussi)
+        try {
+          await fetch(GOOGLE_SHEET_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: encode(data),
+          });
+        } catch (e3) {
+          console.warn('Apps Script POST failed (non-bloquant):', e3);
+        }
+
+        // 4) Affiche "merci"
         form.reset();
         showThanks();
       } catch (err) {
