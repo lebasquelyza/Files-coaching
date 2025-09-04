@@ -1,0 +1,20 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "../../../packages/ui/themes/default.css";
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-family);
+}
+.card { background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow); padding: 1.5rem; }
+.btn { @apply px-4 py-2 rounded-xl text-white transition; background: linear-gradient(135deg, var(--brand), var(--brand2)); }
+.btn-outline { @apply px-4 py-2 rounded-xl border border-gray-300 hover:bg-gray-100 transition; }
+.input { @apply w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2; }
+.label { @apply text-sm font-medium text-gray-700; }
+.link { @apply hover:underline; color: var(--brand); }
+.text-brand { color: var(--brand); }
+
+html{scroll-behavior:smooth}

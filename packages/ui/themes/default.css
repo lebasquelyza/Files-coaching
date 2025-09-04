@@ -1,0 +1,18 @@
+
+/* >>> IMPORTANT <<<
+   REMPLIS ces variables avec EXACTEMENT les couleurs/typos de files-coaching.com
+   pour obtenir le MÊME thème côté web & mobile.
+*/
+:root{
+  --bg:#ffffff;
+  --panel:#f7f7f9;
+  --muted:#333333;
+  --text:#111111;
+  --brand:#16a34a;
+  --brand2:#15803d;
+  --accent:#0ea5e9;
+  --ring:rgba(14,165,233,.35);
+  --radius:14px;
+  --shadow:0 6px 18px rgba(0,0,0,.08);
+  --font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+}
