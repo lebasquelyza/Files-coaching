@@ -121,7 +121,7 @@ export async function handler(event) {
         <b>Prochaines étapes :</b><br>
         • Analyse de tes réponses 👀<br>
         • Préparation d’un exemple plan personnalisé 📝<br>
-        • Envoi de ta proposition 💪
+        • Réception de notre proposition
       </p>
       <hr style="border:none;border-top:1px solid #eee;margin:20px 0" />
       <p style="font-size:0.9em;color:#555">
