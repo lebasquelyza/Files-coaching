@@ -120,7 +120,7 @@ export async function handler(event) {
       <p>
         <b>Prochaines étapes :</b><br>
         • Analyse de tes réponses 👀<br>
-        • Préparation d’un plan personnalisé 📝<br>
+        • Préparation d’un exemple plan personnalisé 📝<br>
         • Envoi de ta proposition 💪
       </p>
       <hr style="border:none;border-top:1px solid #eee;margin:20px 0" />
@@ -141,7 +141,7 @@ adaptée à ton niveau, ton objectif et tes disponibilités.
 
 Étapes :
 - Analyse de tes réponses 👀
-- Plan personnalisé 📝
+- Exemple de plan personnalisé 📝
 - Envoi de ta proposition 💪
 
 Questions : ${adminEmail}
@@ -173,7 +173,7 @@ Questions : ${adminEmail}
       resend.emails.send({
         from,
         to: [toClient],
-        subject: "🎉 Merci ! Ton coaching personnalisé arrive bientôt",
+        subject: "🎉 Merci ! Ton exemple de coaching personnalisé arrive bientôt",
         html: htmlClient,
         text: textClient,
         reply_to: replyTo,
