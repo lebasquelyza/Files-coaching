@@ -122,6 +122,7 @@ Pour toute question : ${adminEmail}
         <li><b>Poids:</b> ${escapeHtml(String(poids || "-"))}</li>
         <li><b>Niveau:</b> ${escapeHtml(niveau || "-")}</li>
         <li><b>Objectif:</b> ${escapeHtml(objectif || "-")}</li>
+        <li><b>Matériel:</b> ${escapeHtml(matériel || "-")}</li>
         <li><b>Dispos:</b> ${escapeHtml((dispo || "-")).replace(/\n/g,"<br>")}</li>
       </ul>
     </div>
