@@ -142,7 +142,7 @@ adaptée à ton niveau, ton objectif et tes disponibilités.
 Étapes :
 - Analyse de tes réponses 👀
 - Exemple de plan personnalisé 📝
-- Envoi de ta proposition 💪
+- Envoi de notre proposition 💪
 
 Questions : ${adminEmail}
 — L’équipe Files Coaching`;
